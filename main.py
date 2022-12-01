@@ -19,6 +19,7 @@ def main():
     array.sort()
     array.reverse()
     print(array[0])
+    print(array[0] + array[1] + array[2])
 
 if __name__ == "__main__":
     main()
