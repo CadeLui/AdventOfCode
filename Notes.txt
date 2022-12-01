@@ -1,0 +1,5 @@
+INPUT - Calories
+
+Calorie counts separated by LineBreak
+Inventories separated by Blank LineBreak
+Find elf with most total calories, return calorie amount
