@@ -33,7 +33,7 @@ def help():
 def partTwo():
     score = 0
     sacks = []
-    for line, index in enumerate(file.readlines()):
+    for index, line in enumerate(file.readlines()):
         sacks.append(line[0:len(line)-1])
         if ((index+1)%3 == 0):
             score += findBadge(sacks)
@@ -41,6 +41,6 @@ def partTwo():
     return score
 
 
-print(help())
+print(partTwo())
 
 file.close()
