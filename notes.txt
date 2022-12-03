@@ -1,0 +1,9 @@
+A X Rock
+B Y Paper
+C Z Scissors
+
+lose = base
+tie = +3
+win = +6
+
+A X > Tie=3, Rock=1 > 4
