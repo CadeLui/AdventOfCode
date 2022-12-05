@@ -1,4 +1,4 @@
-file = open("input.txt")
+file = open("input(1).txt")
 
 def grabNums(string: str):
     stringArray = []
@@ -36,6 +36,6 @@ def partTwo():
         i += findAnyDupe(range(nums[0], nums[1]+1), range(nums[2], nums[3]+1))
     return i
 
-print(partTwo())
+print(partOne())
 
 file.close()
