@@ -44,9 +44,14 @@ class d:
         for obj in self.directory:
             if isinstance(obj, d):
                 result += obj.get_inside(indent+1) + "\n"
-            elif isinstance(obj, f):
-                result += (" " * (indent+1)) + "> " + obj.get_name() + ":" + str(obj.get_size()) + ":file" + "\n"
+            #elif isinstance(obj, f):
+            #    result += (" " * (indent+1)) + "> " + obj.get_name() + ":" + str(obj.get_size()) + ":file" + "\n"
         return result[:-1]
+    def get_num_of_dics(self, number=0):
+        for obj in self.directory:
+            if isinstance(obj, d):
+                return obj.get_num_of_dics(number+1)
+        return number
 
     def get_directories(self):
         directories = []
@@ -97,13 +102,16 @@ for lineNum, line in enumerate(lines):
 
 print(root_directory.get_inside())
 
-def get_size_less_than_100000(directories: list, total: int):
+def get_size_less_than_100000(directories: list, total=0):
     for obj in directories:
         print(obj.get_name() + ":" + str(obj.get_size()), end=":")
         if obj.get_size() <= 100000:
             print("ADDED")
             total += obj.get_size()
-        else: print("SKIPPED")
+        else: 
+            print("SKIPPED")
+            pass
     return total
 
-print(get_size_less_than_100000(root_directory.get_directories(), 0))
+print(root_directory.get_size())
+print(get_size_less_than_100000(root_directory.get_directories()))

@@ -48,5 +48,6 @@ while i < len(input):
 
 sizes = filesystem.get_sizes()
 
+print(filesystem.get_sizes())
 print(f"Part 1: {sum([size for size in sorted(sizes) if size <= 100000])}")
 print(f"Part 2: {next(size for size in sorted(sizes) if size >= sizes[0] - 40000000)}")
