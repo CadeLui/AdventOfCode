@@ -21,6 +21,12 @@ class d:
             if isinstance(obj, d):
                 return obj.get_sub_directory(directoryName)
         return self
+    
+    def get_direct_ory(self, search:str):
+        for obj in self.directory:
+            if isinstance(obj, d):
+                if obj.get_name() == search:
+                    return obj
 
         
     def add_directory(self, directoryName: str):
@@ -44,14 +50,9 @@ class d:
         for obj in self.directory:
             if isinstance(obj, d):
                 result += obj.get_inside(indent+1) + "\n"
-            #elif isinstance(obj, f):
-            #    result += (" " * (indent+1)) + "> " + obj.get_name() + ":" + str(obj.get_size()) + ":file" + "\n"
+            elif isinstance(obj, f):
+                result += (" " * (indent+1)) + "> " + obj.get_name() + ":" + str(obj.get_size()) + ":file" + "\n"
         return result[:-1]
-    def get_num_of_dics(self, number=0):
-        for obj in self.directory:
-            if isinstance(obj, d):
-                return obj.get_num_of_dics(number+1)
-        return number
 
     def get_directories(self):
         directories = []
@@ -60,8 +61,45 @@ class d:
                 directories.append(obj)
                 directories.extend(obj.get_directories())
         return directories
+    
+    def get_sizes(self, depth = 0):
+        sizes = []
+        for obj in self.directory:
+            if isinstance(obj, d):
+                depth += 1
+                if obj.get_size() > 0: sizes.append(obj.get_size())
+                sizes.extend(obj.get_sizes(depth))
+        print(depth)
+        return sizes
+    
+    def get_names(self):
+        names = []
+        for obj in self.directory:
+            if isinstance(obj, d):
+                if obj.get_size() > 0: names.append(obj.get_name())
+                names.extend(obj.get_names())
+        return names
 
+current_directory = []
 root_directory = d("/")
+
+def parseCD(line: str, current_directory: list):
+    splitLine = line.split(" ")
+    if splitLine[1] == "cd":
+        splitLine[2] = splitLine[2][:-1]
+        match splitLine[2]:
+            case "/":
+                current_directory = []
+            case "..":
+                current_directory.pop(-1)
+            case _:
+                current_directory.append(splitLine[2])
+    return current_directory
+
+def gettingtheshitineed(directory: d, search: list):
+    for thing in search:
+        directory = directory.get_direct_ory(thing)
+    return directory
 
 def parseLS(log: list[str], currentLine: int):
     # gets the current line, tests if it is an "ls" command
@@ -69,9 +107,7 @@ def parseLS(log: list[str], currentLine: int):
     if line.split(" ")[1] != "ls":
         return
 
-    # Gets the line before the "ls" command, grabs the directory we are currently inside
-    prevLine = log[currentLine-1][:-1]
-    directory = root_directory.get_sub_directory(prevLine.split(" ")[-1])
+    directory = gettingtheshitineed(root_directory, current_directory)
 
     # for each line after "ls"
     for iterator in range(currentLine+1, len(log)):
@@ -98,20 +134,29 @@ lines = file.readlines()
 
 for lineNum, line in enumerate(lines):
     parseLS(lines, lineNum)
-    #print(root_directory.get_inside() + "\n")
-
-print(root_directory.get_inside())
+    current_directory = parseCD(line, current_directory)
 
 def get_size_less_than_100000(directories: list, total=0):
     for obj in directories:
-        print(obj.get_name() + ":" + str(obj.get_size()), end=":")
+        #print(obj.get_name() + ":" + str(obj.get_size()), end=":")
         if obj.get_size() <= 100000:
-            print("ADDED")
+            #print("ADDED")
             total += obj.get_size()
         else: 
-            print("SKIPPED")
+            #print("SKIPPED")
             pass
     return total
 
-print(root_directory.get_size())
 print(get_size_less_than_100000(root_directory.get_directories()))
+
+bullshit = 30000000 - (70000000 - root_directory.get_size())
+print(bullshit)
+print(root_directory.get_sizes())
+
+listofshit = root_directory.get_sizes()
+listofshit.sort()
+print(listofshit)
+for shit in listofshit:
+    if shit >= bullshit:
+        print(shit)
+        break
