@@ -1,20 +1,4 @@
-def getNewTail(oldHeadPos: list[int], newHeadPos: list[int], tailPos: list[int]):
-    # [row, col]
-    if abs(newHeadPos[0] - tailPos[0]) > 1 or abs(newHeadPos[1] - tailPos[1]) > 1:
-        oldHeadPos 
-    return tailPos
-
-def getNewTail2(oldHeadPos: list[int], newHeadPos: list[int], tailPos: list[int]):
-    newPos = list(tailPos)
-    if abs(newHeadPos[0] - tailPos[0]) > 1 or abs(newHeadPos[1] - tailPos[1]) > 1:
-        if (newHeadPos[0] != tailPos[0]):
-            newPos[0] += newHeadPos[0] - oldHeadPos[0]
-        if (newHeadPos[1] != tailPos[1]):
-            newPos[0] += newHeadPos[1] - oldHeadPos[1]
-        return newPos
-    return tailPos
-
-def getNewTail3(headPos: list[int], tailPos: list[int]):
+def getNewTail(headPos: list[int], tailPos: list[int]):
     newPos = list(tailPos)
     change = [headPos[0] - tailPos[0], headPos[1] - tailPos[1]]
     if abs(change[0]) > 1 or abs(change[1]) > 1:
@@ -66,7 +50,7 @@ def main():
             componentPositions[0][0] += modifier[0]
             componentPositions[0][1] += modifier[1]
             for i in range(1, len(componentPositions)):
-                componentPositions[i] = getNewTail3(
+                componentPositions[i] = getNewTail(
                     list(componentPositions[i-1]), 
                     list(componentPositions[i])
                 )
