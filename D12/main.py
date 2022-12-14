@@ -19,6 +19,14 @@ def findStart(lines: list[str]) -> list[int]:
                 return [row, col]
     return [-1, -1]
 
+def findStarts(lines: list[str]) -> list[list[int]]:
+    starts = []
+    for row, line in enumerate(lines):
+        for col, char in enumerate(line):
+            if char == "S" or  char == "a":
+                starts.append([row, col])
+    return starts
+
 def findEnd(lines: list[str]) -> list[int]:
     for row, line in enumerate(lines):
         for col, char in enumerate(line):
@@ -39,19 +47,23 @@ def getNeighbors(point: list[int], row_max: int, col_max: int):
     return neighbors
 
 def BFS(start: list[int], end: list[int], grid: list[list[int]]):
-    vis = [[False for i in range(len(grid[0]))] for i in range(len(grid))]
-    visCount = 0
+    #vis = [[False for i in range(len(grid[0]))] for i in range(len(grid))]
     queue = []
-    queue.append(start)
-    vis[start[0]][start[1]] = True
+    visits = []
+    queue.append([start[0], start[1], 0])
+    visits.append(start)
     while queue:
-        visCount += 1
-        point = queue.pop(0)
+        row, col, score = queue.pop(0)
+        point = [row, col]
+        if point == end:
+            return score
+        if score > len(grid) * len(grid[0]):
+            return score
         for neighbor in getNeighbors(point, len(grid)-1, len(grid[0])-1):
-            if grid[neighbor[0]][neighbor[1]]-1 <= grid[point[0]][point[1]]:
-                queue.append(neighbor)
-                vis[neighbor[0]][neighbor[1]] = True
-    return vis
+            if grid[neighbor[0]][neighbor[1]]-1 <= grid[point[0]][point[1]] and visits.count(neighbor) < 1:
+                queue.append([neighbor[0], neighbor[1], score+1])
+                visits.append([neighbor[0], neighbor[1]])
+    return -1
 
 
 def partOne(lines: list[str]):
@@ -62,9 +74,16 @@ def partOne(lines: list[str]):
 
 
 def partTwo(lines: list[str]):
-    pass
+    newMap = reformat(lines)
+    starts = findStarts(lines)
+    end = findEnd(lines)
+    times = []
+    for start in starts:
+        times.append(BFS(start, end, newMap))
+    times.sort()
+    print(times)
 
 if __name__ == "__main__":
-    lines = open("example").readlines()
+    lines = open("input").readlines()
     partOne(lines)
     partTwo(lines)
