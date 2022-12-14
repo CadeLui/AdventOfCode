@@ -58,7 +58,7 @@ def BFS(start: list[int], end: list[int], grid: list[list[int]]):
         if point == end:
             return score
         if score > len(grid) * len(grid[0]):
-            return score
+            return -1
         for neighbor in getNeighbors(point, len(grid)-1, len(grid[0])-1):
             if grid[neighbor[0]][neighbor[1]]-1 <= grid[point[0]][point[1]] and visits.count(neighbor) < 1:
                 queue.append([neighbor[0], neighbor[1], score+1])
