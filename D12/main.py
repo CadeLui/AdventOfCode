@@ -26,42 +26,45 @@ def findEnd(lines: list[str]) -> list[int]:
                 return [row, col]
     return [-1, -1]
 
-def genBlankMap(rows: int, cols: int):
-    blankMap = []
-    for row in range(0, rows):
-        blankMap.append([])
-        for col in range(0, cols):
-            blankMap[row].append(-1)
-    return blankMap
+rowMod = [-1, 0, 0, 1]
+colMod = [0, -1, 1, 0]
 
-def genBFS(start: list[int], end: list[int], heightmap: list[list[int]]):
-    queue = {}
-    index = 0
-    while list(queue.values()).count(end) < 1:
-        queue.update(start, [])
-        for row in range(-1, 2):
-            for col in range(-1, 2):
-                if (row == 0 and col == 0) or (row != 0 and col != 0):
-                    continue
-                new_row = start[0] + row
-                new_col = start[1] + col
-                if new_row < 0 or new_row > len(heightmap)-1 or new_col < 0 or new_col > len(heightmap[0])-1:
-                    continue
-                if heightmap[new_row][new_col]-1 <= heightmap[start[0]][start[0]]:
-                    queue[start].append([new_row, new_col])
-        
+def getNeighbors(point: list[int], row_max: int, col_max: int):
+    neighbors = []
+    for i in range(4):
+        newPoint = [point[0]+rowMod[i], point[1]+colMod[i]]
+        if row_max < newPoint[0] or newPoint[0] < 0 or col_max < newPoint[1] or newPoint[1] < 0:
+            continue
+        neighbors.append(newPoint)
+    return neighbors
+
+def BFS(start: list[int], end: list[int], grid: list[list[int]]):
+    vis = [[False for i in range(len(grid[0]))] for i in range(len(grid))]
+    visCount = 0
+    queue = []
+    queue.append(start)
+    vis[start[0]][start[1]] = True
+    while queue:
+        visCount += 1
+        point = queue.pop(0)
+        for neighbor in getNeighbors(point, len(grid)-1, len(grid[0])-1):
+            if grid[neighbor[0]][neighbor[1]]-1 <= grid[point[0]][point[1]]:
+                queue.append(neighbor)
+                vis[neighbor[0]][neighbor[1]] = True
+    return vis
+
 
 def partOne(lines: list[str]):
     newMap = reformat(lines)
     start = findStart(lines)
     end = findEnd(lines)
-    numOfMoves = 0
+    print(BFS(start, end, newMap))
 
 
 def partTwo(lines: list[str]):
     pass
 
 if __name__ == "__main__":
-    lines = open("input").readlines()
+    lines = open("example").readlines()
     partOne(lines)
     partTwo(lines)
