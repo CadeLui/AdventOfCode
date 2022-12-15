@@ -1,6 +1,3 @@
-from functools import cmp_to_key
-from math import prod
-
 def getPairs(lines: list[str]) -> list():
     pairs = []
     pair = []
@@ -34,43 +31,49 @@ def compare(left: list, right: list) -> int:
         if comp != 0:
             return comp
         iterator = iterator+1
-
     if iterator == len(left) and iterator == len(right):
-        return 0            
+        return 0
     elif(iterator == len(left)):
         return 1
     else:
         return -1
 
-def displayPairs(pairs: list) -> None:
-    for pair in pairs:
-        print(pair[0], "+", pair[1])
-
-def reorderPairs(pairs: list) -> list:
-    orderedPairs = []
-    for index, pair in enumerate(pairs):
-        comp = compare(pair[0], pair[1])
-        if comp == -1:
-            orderedPairs.append([pair[1], pair[0]])
-        else:
-            orderedPairs.append(pair)
-    return orderedPairs
-
+def sortPackets(packets: list[list[int]]) -> list[list[int]]:
+    unsortedPackets = list(packets)
+    sortedPackets = [unsortedPackets.pop(0)]
+    while unsortedPackets:
+        movingPacket = unsortedPackets.pop(0)
+        for index, packet in enumerate(sortedPackets):
+            if compare(movingPacket, packet) == 1:
+                sortedPackets.insert(index, movingPacket)
+                break
+        if movingPacket not in sortedPackets:
+            sortedPackets.append(movingPacket)
+    return sortedPackets
 
 def partOne(lines: list[str]) -> None:
+    print("SUM OF INDICES", end=": ")
     pairs = getPairs(lines)
     num = 0
     for index, pair in enumerate(pairs):
-        comp = compare(pair[0], pair[1])
-        if comp == 1 or comp == 0:
+        left = pair[0]
+        right = pair[1]
+        comp = compare(left, right)
+        if comp == 1:
             num += index+1
     print(num)
 
 def partTwo(lines: list[str]) -> None:
+    print("DECODER KEY", end=": ")
     pairs = getPairs(lines)
-    pairs.append([2]); pairs.append([6])
-    pairs = sorted(pairs, key=cmp_to_key(compare))
-    print(prod([idx+1 for idx,v in enumerate(pairs) if v==[[2]] or v == [[6]]]))
+    packets = [[2], [6]]
+    for pair in pairs:
+        packets.append(pair[0])
+        packets.append(pair[1])
+    sortedPackets = sortPackets(packets)
+    print((sortedPackets.index([2])+1) * (sortedPackets.index([6])+1))
+    print((sortedPackets.index([2])+1))
+    print((sortedPackets.index([6])+1))
 
 def main(filename: str) -> None:
     lines = [l.strip() for l in open(filename).readlines()]
@@ -78,4 +81,7 @@ def main(filename: str) -> None:
     partTwo(lines)
 
 if __name__ == "__main__":
+    print("EXAMPLE:")
     main("example")
+    print("REAL")
+    main("input")
