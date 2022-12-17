@@ -58,7 +58,7 @@ def getCoveredParts(covers: list[list[int]]) -> list[int]:
 
 
 
-def partOne(lines: list[str], testY) -> None:
+def partOne(lines: list[str], testY: int) -> None:
     sensors = []
     beacons = []
     differences = []
@@ -78,7 +78,7 @@ def partOne(lines: list[str], testY) -> None:
     print(covers[0][1] - covers[0][0])
     
 
-def partTwo(lines: list[str], test) -> None:
+def partTwo(lines: list[str], test: int) -> None:
     sensors = []
     beacons = []
     x = []
