@@ -1,3 +1,5 @@
+from nestedListSort import sort
+
 def grabSensor(line: str) -> list[int]:
     line = line.split()
     x = int(line[2].replace("x=", "").replace(",", ""))
@@ -15,59 +17,8 @@ def getCoveredX(y: int, sensor: list[int], r: int) -> list[int]:
     halves = abs(abs(sensor[1]-y)-r)
     return [sensor[0] - halves, sensor[0] + halves]
 
-def getWholeCover(covers: list[list[int]]) -> list[int]:
-    left = covers[0][0]
-    right = covers[0][1]
-    for cover in covers:
-        if cover[0] < left:
-            left = cover[0]
-        if cover[1] > right:
-            right = cover[1]
-    return [left, right]
-
-def compareInt(left: int, right: int) -> int:
-    if left == right: return 0
-    return 1 if left<right else -1
-
-def compare(left: list, right: list) -> int:
-    iterator = 0
-    while iterator < len(left) and iterator < len(right):
-        leftVal = left[iterator]
-        rightVal = right[iterator]
-        comp = 0
-        if (isinstance(leftVal,int) and isinstance(rightVal, int)):
-            comp = compareInt(leftVal,rightVal)
-        else:
-            if (isinstance(leftVal, int)):
-                leftVal = [leftVal]
-            if (isinstance(rightVal, int)):
-                rightVal = [rightVal]
-            comp = compare(leftVal,rightVal)
-        if comp != 0:
-            return comp
-        iterator = iterator+1
-    if iterator == len(left) and iterator == len(right):
-        return 0
-    elif(iterator == len(left)):
-        return 1
-    else:
-        return -1
-
-def sortPackets(packets: list[list[int]]) -> list[list[int]]:
-    unsortedPackets = list(packets)
-    sortedPackets = [unsortedPackets.pop(0)]
-    while unsortedPackets:
-        movingPacket = unsortedPackets.pop(0)
-        for index, packet in enumerate(sortedPackets):
-            if compare(movingPacket, packet) == 1:
-                sortedPackets.insert(index, movingPacket)
-                break
-        if movingPacket not in sortedPackets:
-            sortedPackets.append(movingPacket)
-    return sortedPackets
-
 def getCoveredParts(covers: list[list[int]]) -> list[int]:
-    covers = sortPackets(covers)
+    covers = sort(covers)
     partsCovered = [covers[0]]
     for cover1 in covers:
         for index, cover2 in enumerate(partsCovered):
@@ -89,7 +40,7 @@ def getCoveredParts(covers: list[list[int]]) -> list[int]:
             partsCovered.append(cover1)
             if index > 100:
                 break
-    partsCovered = sortPackets(partsCovered)
+    partsCovered = sort(partsCovered)
     for index in range(len(partsCovered)-1):
         part1 = partsCovered[index]
         part2 = partsCovered[index+1]
@@ -153,9 +104,6 @@ def partTwo(lines: list[str], test) -> None:
     minX = x[0]; maxX = x[-1]
     minY = y[0]; maxY = y[-1]
 
-    print(maxY, maxX)
-    print(minY, minX)
-
     for y in range(minY, maxY):
         covers = []
         for index, sensor in enumerate(sensors):
@@ -168,7 +116,6 @@ def partTwo(lines: list[str], test) -> None:
             if covers[0][1]+2 == covers[1][0]:
                 if covers[0][1]+1 < minX or covers[0][1]+1 > maxX:
                     continue
-                print(covers[0][1]+1)
                 print((covers[0][1]+1) * 4000000 + y)
         
 
