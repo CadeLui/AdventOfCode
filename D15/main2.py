@@ -81,30 +81,28 @@ def partOne(lines: list[str], testY: int) -> None:
 def partTwo(lines: list[str], test: int) -> None:
     sensors = []
     beacons = []
-    x = []
-    y = []
+    mmaxY = -1
+    mmaxX = -1
+    mminY = test
+    mminX = test
+    #x = []
+    #y = []
     differences = []
     for line in lines:
         sensor = grabSensor(line)
-        if sensor[0] > 0 and sensor[0] < test:
-            x.append(sensor[0])
-        if sensor[1] > 0 and sensor[1] < test:
-            y.append(sensor[1])
         beacon = grabBeacon(line)
-        if beacon[0] > 0 and beacon[0] < test:
-            x.append(beacon[0])
-        if beacon[1] > 0 and beacon[1] < test:
-            y.append(beacon[1])
+        if beacon[0] < 0 or beacon[0] > test:
+            continue
+        if beacon[1] < 0 or beacon[1] > test:
+            continue
+        if beacon[0] < mminX: mminX = beacon[0]
+        if beacon[0] > mmaxX: mmaxX = beacon[0]
+        if beacon[1] < mminY: mminY = beacon[1]
+        if beacon[1] > mmaxY: mmaxY = beacon[1]
         sensors.append(sensor)
         beacons.append(beacon)
         differences.append(abs(sensor[0] - beacon[0]) + abs(sensor[1] - beacon[1]))
-
-    x.sort()
-    y.sort()
-    minX = x[0]; maxX = x[-1]
-    minY = y[0]; maxY = y[-1]
-
-    for y in range(minY, maxY):
+    for y in range(mminY, mmaxY):
         covers = []
         for index, sensor in enumerate(sensors):
             cover = getCoveredX(y, sensor, differences[index])
@@ -114,7 +112,7 @@ def partTwo(lines: list[str], test: int) -> None:
         covers = getCoveredParts(covers)
         if len(covers) == 2:
             if covers[0][1]+2 == covers[1][0]:
-                if covers[0][1]+1 < minX or covers[0][1]+1 > maxX:
+                if covers[0][1]+1 < mminX or covers[0][1]+1 > mmaxX:
                     continue
                 print((covers[0][1]+1) * 4000000 + y)
         
